@@ -1,0 +1,7 @@
+1 - foc
+2 - spi
+4 - foc2
+8 - genois
+16 - code zéro
+32 - spi léger
+64 - gennaker

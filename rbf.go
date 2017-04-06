@@ -105,7 +105,11 @@ func (n *RBFNetwork) makeRBF(input []float64) []float64 {
 		div += result[j]
 	}
 	for j := 0; j < len(n.Centers); j++ {
-		result[j] = result[j] / div
+		if div != 0 {
+			result[j] = result[j] / div
+		} else {
+			result[j] = 0
+		}
 	}
 	return result
 }

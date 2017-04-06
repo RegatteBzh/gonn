@@ -36,7 +36,7 @@ func knotToMeter(knot float64) float64 {
 	return knot * float64(0.514444)
 }
 
-func loadAllPolars(pathName string, shipName string) (models []*gonn.RBFNetwork, err error) {
+func loadAllPolars(pathName string, shipName string) (models map[string]*gonn.RBFNetwork, err error) {
 
 	dic := make(map[string]string)
 	dic["1"] = "foc"
@@ -75,15 +75,15 @@ func loadAllPolars(pathName string, shipName string) (models []*gonn.RBFNetwork,
 		}
 	}
 
-	models = make([]*gonn.RBFNetwork, len(toLoad))
+	models = make(map[string]*gonn.RBFNetwork)
 
-	for index, elt := range toLoad {
+	for _, elt := range toLoad {
 		inputs, targets, err := csvLoader(elt.File, elt.Name)
 		if err != nil {
 			log.Fatal(err)
 		}
-		models[index] = gonn.DefaultRBFNetwork(2, 1, 4, true)
-		models[index].Train(inputs, targets, 1000)
+		models[elt.Name] = gonn.DefaultRBFNetwork(2, 1, 100, true)
+		models[elt.Name].Train(inputs, targets, 1000)
 	}
 
 	return
@@ -148,29 +148,6 @@ func main() {
 
 	models, _ := loadAllPolars("./polaires/imoca60", "imoca60")
 
-	/*nn := gonn.DefaultRBFNetwork(2, 1, 4, true)
-	inputs := [][]float64{
-		[]float64{0, 0},
-		[]float64{0, 1},
-		[]float64{1, 0},
-		[]float64{1, 1},
-		[]float64{2, 2},
-	}
-
-	targets := [][]float64{
-		[]float64{0}, //0+0=0
-		[]float64{1}, //0+1=1
-		[]float64{1}, //1+0=1
-		[]float64{2}, //1+1=2
-		[]float64{4}, //1+1=2
-	}
-
-	nn.Train(inputs, targets, 1000)
-
-	for _, p := range inputs {
-		fmt.Println(nn.Forward(p))
-	}*/
-
-	fmt.Println(models[2].Forward([]float64{2, 2}))
+	fmt.Println(models["imoca60-foc"].Forward([]float64{2, 10}))
 
 }
